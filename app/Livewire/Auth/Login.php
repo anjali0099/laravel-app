@@ -11,11 +11,21 @@ class Login extends Component
     public $email;
     public $password;
 
+    /**
+     * Render the login component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.login');
     }
 
+    /**
+     * Validate credentials and attempt to log the user in.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function loginUser()
     {
         $this->validate([

@@ -13,6 +13,12 @@ class CreateUser extends Component
     public $first_name, $last_name, $email, $password;
     public $isEdit = false;
 
+    /**
+     * Initialize component state.
+     *
+     * @param  int|null  $userId  The ID of the user to edit, if any.
+     * @return void
+     */
     public function mount($userId = null)
     {
         if ($userId) {
@@ -25,12 +31,17 @@ class CreateUser extends Component
         }
     }
 
+    /**
+     * Save or update the user based on the form data.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function saveUser()
     {
         $rules = [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . ($this->userId ?? 'NULL'),
+            'email' => 'required|email|unique:users,email',
         ];
 
         // Add password validation only if creating a new user
@@ -60,6 +71,11 @@ class CreateUser extends Component
         return redirect()->route('dashboard');
     }
 
+    /**
+     * Render the component view.
+     *
+     * @return \Illuminate\View\View
+     */
     public function render()
     {
         return view('livewire.createuser');

@@ -39,8 +39,12 @@
                             </button>
 
                             <!-- Send Verification Email Button -->
-                            <button wire:click="sendEmail({{ $user->id }})" class="btn btn-warning btn-sm">
-                                <i class="fas fa-envelope"></i> Send Verification Email
+                            <button
+                                wire:click="sendEmail({{ $user->id }})"
+                                class="btn btn-warning btn-sm"
+                                @if ($user->hasVerifiedEmail()) disabled @endif>
+                                <i class="fas fa-envelope"></i>
+                                Send Verification Email
                             </button>
                         </td>
                     </tr>

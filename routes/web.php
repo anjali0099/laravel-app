@@ -13,18 +13,38 @@ Route::get('/', Home::class);
 
 // Route to show email verification notice page
 Route::get('/email/verify', function () {
+    if (auth()->check() && auth()->user()->hasVerifiedEmail()) {
+        return redirect()->route('dashboard');
+    }
+
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
 // Route to handle email verification link
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/dashboard');
+    $user = $request->user();
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('dashboard')->with('message', 'You are already verified.');
+    }
+
+    // Mark email as verified and redirect to dashboard
+    if ($user->markEmailAsVerified()) {
+        return redirect()->route('dashboard')->with('message', 'Your email has been verified.');
+    }
+
+    return redirect()->route('verification.notice')->withErrors('Verification failed.');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 // Route to send a new email verification notification
 Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
+    $user = $request->user();
+
+    if ($user->hasVerifiedEmail()) {
+        return redirect()->route('dashboard')->with('message', 'You are already verified.');
+    }
+
+    $user->sendEmailVerificationNotification();
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 

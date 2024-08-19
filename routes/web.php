@@ -5,6 +5,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\CreateUser;
 use App\Livewire\Home;
+use App\Livewire\ViewUser;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -52,6 +53,12 @@ Route::get('/register', Register::class)->name('register');
 Route::get('/login', Login::class)->name('login');
 
 // Route for user dashboard, accessible only to authenticated and verified users
-Route::get('/dashboard', Dashboard::class)->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/users/create', CreateUser::class)->middleware(['auth'])->name('users.create');
-Route::get('/users/edit/{userId}', CreateUser::class)->middleware(['auth'])->name('users.edit');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users/create', CreateUser::class)->name('users.create');
+    Route::get('/users/edit/{user}', CreateUser::class)->name('users.edit');
+    Route::get('/users/{user}', ViewUser::class)->name('users.view');
+});

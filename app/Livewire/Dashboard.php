@@ -12,7 +12,6 @@ class Dashboard extends Component
     use WithPagination;
 
     public $users;
-    public $showCreateForm = false;
     public $first_name, $last_name, $email;
 
     /**
